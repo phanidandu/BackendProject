@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add Product</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/product.css">
+</head>
+
+<body>
+    <header class="main-header">
+        <nav class="main-header__nav">
+            <ul class="main-header__item-list">
+                <li class="main-header__item"><a href="/">Shop</a></li>
+                <li class="main-header__item"><a class="active" href="/admin/add-product">Add Product</a></li>
+                <li class="main-header__item"><a href="/contactus">Contact Us</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <form class="product-form" onsubmit="alert('Form successfully Filled')" action="/success" method="POST">
+            <div class="form-control">
+                <h1>Book a call</h1>
+                <h6>Book a call and our representative will call you within 1hr</h6>
+                <hr>
+                <label for="Name">Name:</label>
+                <input type="text" name="Name" id="Name">
+                <label for="Email">Email:</label>
+                <input type="text" name="Email" id="Email">
+            </div>
+
+            <button type="submit">GET A CALL</button>
+        </form>
+    </main>
+</body>
+
+</html>
