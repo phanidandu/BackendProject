@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>BOOKING AN APPOINTMENT PROJECT</title>
+</head>
+
+  <body>
+        <form onsubmit="store(event)">
+              <h1>BOOKING APPOINTMENT APP</h1>
+              <label>Name</label>
+              <br>
+              <input type="text" name="username" required id="nm">
+              <br>
+              <label>Email</label>
+              <br>
+              <input type="text" name="email" required id="em">
+              <br>
+              <label>PhoneNumber</label>
+              <br>
+                <input type="text" name="PhoneNumber" required id="pn">
+              <br>  
+            <button> Submit </button>
+          </form>
+
+          <ul id="listItems"></ul>
+          
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    
+    <script>
+     function store(event){
+     event.preventDefault();
+     console.log(event);
+     const name= event.target.username.value;
+     const emailid= event.target.email.value;
+     const number= event.target.PhoneNumber.value;
+
+     console.log(name+'-'+ emailid+'-'+ number);
+     const obj={
+      name,
+      emailid, 
+      number
+     };
+
+     axios.post('http://localhost:3000/user/add-user',obj)
+     .then((response)=>{
+      console.log(response);
+      showonscreen(response.data.newUserDetail);
+     })
+     .catch((err)=> {
+      document.body.innerHTML=document.body.innerHTML+"<h4>Something went wrong</h4>";  
+      console.log(err);
+      })
+     }
+  
+     window.addEventListener("DOMContentLoaded", ()=>{
+       axios.get('http://localhost:3000/user/get-users')
+       .then((response) =>{
+        console.log(response);
+
+        for(var i=0;i<response.data.allUsers.length;i++)
+        {
+            showonscreen(response.data.allUsers[i]);
+        }
+     })
+     .catch((error) => console.log(error))
+
+    })
+  
+
+     function showonscreen(obj){
+      console.log(obj);
+      
+      document.getElementById('nm').value='';
+      document.getElementById('em').value='';
+      document.getElementById('pn').value='';
+      
+      const parentElem= document.getElementById('listItems');
+      const childElem = document.createElement('li');
+      childElem.textContent = obj.name + '-' + obj.email + '-' + obj.phonenumber;
+      
+      const deletebtn = document.createElement('Input');
+      deletebtn.type="button";
+      deletebtn.value="Delete";
+
+      const id=obj.id;
+
+      deletebtn.onclick = () => {
+           
+        axios.delete(`http://localhost:3000/user/delete-user/${id}`)
+        .then(res => console.log(res))
+        .catch(err=> console.log(err))
+        parentElem.removeChild(childElem);
+      } 
+      
+      //const editbtn = document.createElement('Input');
+      //editbtn.type= "button";
+      //editbtn.value = "Edit";
+
+      const editbtn = document.createElement('Input');
+      editbtn.type= "button";
+      editbtn.value = "Edit";
+      
+      editbtn.onclick = () => { 
+        const nameInput = document.getElementById('nm');
+        const emailInput = document.getElementById('em');
+        const phoneInput = document.getElementById('pn');
+        
+        nameInput.value=obj.name;
+        emailInput.value=obj.email;
+        phoneInput.value=obj.phonenumber;
+        
+        axios.delete(`http://localhost:3000/user/delete-user/${id}`)
+        .then(res => console.log(res))
+        .catch(err=> console.log(err))
+        
+        parentElem.removeChild(childElem);
+      }
+
+      childElem.appendChild(deletebtn);
+      childElem.appendChild(editbtn);
+      parentElem.appendChild(childElem);
+      //parentElem.innerHTML= parentElem.innerHTML + '<li> ${obj.name} + ${obj.email} + ${obj.number} <\li>'
+     }
+/*
+        const n=obj.name;
+        const e=obj.emailid;
+        const p=obj.number;
+        
+        axios.put(`https://crudcrud.com/api/3984f5b19c1345dc8fd29e158bb55dc3/appointmentData/${id}`,{
+          'name' : `${n}`,
+          'emailid' : `${e}`,
+          'number' : `${p}`
+        })
+        .then((response)=>console.log(response))
+        .catch((err)=>console.log(err));
+        */
+       
+</script>
+
+
+</body>
+
