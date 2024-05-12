@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Create Blogs Node JS Project</title>
+  <link rel="stylesheet" href="blogs.css">
+</head>
+
+<body>
+  <div class="container" id="main">
+  <div class="boxes" id="box"> 
+    <h1>Create a New Blog Post</h1>
+    <form onsubmit="addBlog(event)">
+    <label for="title" class="label">Blog Title:</label>
+    <input type="text" id="title" name="blogTitle" placeholder="Enter title for the blog"> <br>
+    <label for="author" class="label">Blog Author:</label>
+    <input type="text" id="author" name="blogAuthor" placeholder="Enter author of the blog"> <br>
+    <label for="content" class="label">Blog Content:</label> <br>
+    <textarea id="content" name="blogContnent" rows="4" cols="40"></textarea><br>
+    <button id="btn">Submit</button>
+    </form>
+ </div> 
+
+ <div id="blog">
+
+ </div>
+ 
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+ 
+ <script>
+
+  window.addEventListener("DOMContentLoaded",()=>{
+            axios.get('http://localhost:3000/blogs/getBlogs')
+            .then((response)=>{
+            console.log(response);
+            
+            for(var i=0;i<response.data.allBlogs.length;i++)
+               {
+                showBlog(response.data.allBlogs[i]);
+               }
+            })
+            .catch((err)=>console.log(err));
+  })
+      
+
+ function addBlog(e){
+  e.preventDefault();
+  const title=e.target.blogTitle.value;
+  const author=e.target.blogAuthor.value;
+  const content=e.target.blogContnent.value;
+  
+  const obj={
+      title,
+      author,
+      content
+    }
+ 
+  console.log(title+'-'+author+'-'+content);
+  
+  axios.post('http://localhost:3000/blogs/addBlog/',obj)
+  .then((response)=>{
+      console.log(response.data.blogDetails);
+      showBlog(response.data.blogDetails);
+      const parent=document.getElementById('box');
+      parent.innerHTML=parent.innerHTML+'<span id=success>Blog post created successfully</span>';
+  })
+  .catch(err=>console.log(err));
+}
+
+function showBlog(obj){
+        document.getElementById('title').value='';
+        document.getElementById('author').value='';
+        document.getElementById('content').value='';
+        
+        const blogId=obj.id;
+        const parentElem=document.getElementById('blog');
+
+        const childHTML=`<button class=collapsible><h3><i>${obj.title}</i></h3></button>
+                         <div class=blogs id=${blogId}> <h3> Title- ${obj.title} </h3> <br> <h4> Author- ${obj.author} </h4> <br> 
+                         <p id=txt> ${obj.content} </p> <br> <h4>Comments</h4> 
+                         <form id=${blogId}formInput>
+                         <input type=text id=${blogId}comment name=blogComment placeholder='Write a comment'>
+                         <button class=comm onclick=inputComment(${blogId})>Add comment</button> </form> 
+                         <ul id=${blogId}comments></ul>
+                         <hr></div>`
+        
+     parentElem.innerHTML=parentElem.innerHTML+childHTML;
+     
+     var coll = document.getElementsByClassName("collapsible");
+     var i;
+
+     for (i = 0; i < coll.length; i++) {
+     coll[i].addEventListener("click", function() {
+      this.classList.toggle("active");
+      var content = this.nextElementSibling;
+      if (content.style.display === "block") {
+      content.style.display = "none";
+      } else {
+      content.style.display = "block";
+      }
+      });
+     }
+     showComments(blogId);  
+   }
+
+   function inputComment(blogId){
+    const inputForm=document.getElementById(`${blogId}formInput`);
+
+    inputForm.onsubmit=(e)=>{
+     e.preventDefault();
+     const comment=e.target.blogComment.value;
+
+     const commObj={blogId,comment};
+     console.log(commObj);
+
+     axios.post(`http://localhost:3000/blogs/${blogId}/addComment/`,commObj)
+     .then((response)=>{
+      console.log(response.data.commentDetails);
+      addComment(response.data.commentDetails,blogId);
+     })
+     .catch(err=>console.log(err));
+     }
+   }
+   
+  
+ function addComment(obj,blogId){
+      document.getElementById(`${blogId}comment`).value='';
+      const parentElem=document.getElementById(`${blogId}comments`);
+      console.log('adding comment');
+      
+      const childHTML=`<li class=comment id=${obj.id}>${obj.comment} <br> <button class=delete onclick=deleteComment(${blogId},${obj.id})>Delete comment</button></li>`
+   
+      parentElem.innerHTML=parentElem.innerHTML+childHTML;
+
+      console.log('added comments')
+ }
+
+function deleteComment(blogId,id){
+    const parentElem=document.getElementById(`${blogId}comments`);
+    const childElem=document.getElementById(id);
+    console.log(childElem);
+
+    axios.delete(`http://localhost:3000/blogs/deleteComment/${id}`)
+    .then(res => console.log(res))
+    .catch(err=> console.log(err))
+     
+     parentElem.removeChild(childElem);
+  }
+  
+  function showComments(blogId){
+    axios.get(`http://localhost:3000/blogs/${blogId}/getComments`)
+    .then((response)=>{
+      console.log(response);
+
+      for(var i=0;i<response.data.allComments.length;i++)
+       {
+         addComment(response.data.allComments[i],blogId);
+       }
+       })
+       .catch((err)=>console.log(err));
+   }
+
+</script>
+
+</body>
+</html>

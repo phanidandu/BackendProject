@@ -1,0 +1,98 @@
+h1 {
+    color:green;
+}
+
+h4{
+    color:goldenrod;
+}
+
+#success{
+  color:yellowgreen;
+}
+
+#txt{
+    padding-left:30px;
+}
+
+label {
+    color:purple;
+}
+
+#btn{
+    color:white;
+    background-color: green;
+    height:2rem;
+    padding:1px 100px;
+    margin:5px 0;
+}
+
+.btn{
+    color:white;
+    background-color:green;
+
+}
+
+input {
+  width:15rem;
+  height:2rem;
+}
+
+.container{
+    display: flex;
+}
+
+.boxes{
+    flex: 0 0 auto;
+    padding: 40px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    margin: 5px;
+    min-width: 200px;
+    max-width: 300px;
+    min-height: 200px;
+    max-height: 360px;
+}
+
+.collapsible {
+    flex:0 0 auto;
+    width:65rem;
+    height:fit-content;
+    text-align: left;
+    background-color:black;
+    color:white;
+    margin: 10px 40px;
+    padding:10px 20px; 
+  }
+
+  .active, .collapsible:hover {
+    background-color: #555;
+  }
+  
+  .content {
+    padding: 0 18px;
+    display: none;
+  }
+
+.blogs{
+    display: none;
+    flex:0 0 auto;
+    width:65rem;
+    height:fit-content;
+    background-color:black;
+    color:white;
+    margin: 10px 40px;
+    padding:10px 20px; 
+}
+
+.comm{
+    padding:0.6rem;
+    color:white;
+    background-color:brown;
+}
+
+.delete{
+    margin:10px 0;
+    color:red;
+    border:none;
+    background-color:black;
+}
