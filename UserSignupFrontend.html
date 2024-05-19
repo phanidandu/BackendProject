@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>New User Signup Page</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+      </head>
+      
+      <body>
+        <div class="container">
+            <div class="row">
+               <!-- <div class="col-md-6 align-self-center"> -->
+                <div class="col d-flex justify-content-center"> 
+                    <h1 id="title-header">New User Signup</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+              <form onsubmit="userSignup(event)" class="col-md-6">
+                <div>    
+                 <label for="userName" class="form-label">User Name</label>
+                 <input type="text" id="name" name="userName" class="form-control" required>
+                </div> 
+                <div> 
+                 <label for="emailId" class="form-label">Email Id:</label>
+                 <input type="text" id="email" name="emailId" class="form-control" required>
+                </div>
+                <div> 
+                  <label for="password" class="form-label">Password:</label>
+                  <input type="password" id="password" name="password" class="form-control" required>
+                 </div> 
+                 <br>
+                 <input id="btn" type="submit" class="btn btn-dark" value="Sign Up">
+             </form>
+        </div>
+        <a href="../Login/login.html" >Existing User - Login </a>
+         
+ 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+        <script>
+         async function userSignup(e){
+           try{
+            e.preventDefault();
+            
+            console.log(e.target.email.value);
+    
+            const signupDetails={
+              name: e.target.userName.value,
+              email: e.target.emailId.value,
+              password: e.target.password.value
+            };
+            console.log(signupDetails);
+            
+           const response = await axios.post('http://localhost:3000/user/signup/',signupDetails)
+             if(response.status == 201){
+               window.location.href= "../Login/login.html"
+             } else{
+              throw new Error('Failed to login');
+             }
+           } 
+            catch(err){
+             document.body.innerHTML+=`<div style="color:red;">${err}</div>`;  
+            }
+           }
+      </script>
+     
+    </body>
+</html>
