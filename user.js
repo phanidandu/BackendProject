@@ -1,23 +1,14 @@
-const Sequelize = require('sequelize');
+const express=require('express');
 
-const sequelize = require('../util/database');
+const expenseController = require('../controllers/expense');
+const userController= require('../controllers/users');
 
-const User = sequelize.define('user', {
-  id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-    allowNull: false,
-    primaryKey: true
-  },
-  name: {
-    type: Sequelize.STRING,
-    unique: true
-  },
-  email: {
-    type: Sequelize.STRING,
-    unique: true
-  },
-  password:Sequelize.STRING 
-});
+const router=express.Router();
 
-module.exports = User;
+router.post('/signup', userController.signup);
+
+router.post('/login', userController.login);
+
+router.get('getUsers',userController.getUsers);
+
+module.exports=router;

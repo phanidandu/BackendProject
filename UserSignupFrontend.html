@@ -35,7 +35,7 @@
                  <input id="btn" type="submit" class="btn btn-dark" value="Sign Up">
              </form>
         </div>
-        <a href="../Login/login.html" >Existing User - Login </a>
+        <a href=".\Login\login.html" >Existing User - Login </a>
          
  
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
@@ -53,7 +53,7 @@
             
            const response = await axios.post('http://localhost:3000/user/signup/',signupDetails)
              if(response.status == 201){
-               window.location.href= "../Login/login.html"
+               window.location.href= "./Login/login.html"
              } else{
               throw new Error('Failed to login');
              }

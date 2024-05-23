@@ -8,11 +8,11 @@ const app = express();
 var cors=require('cors');
 app.use(cors());
 
-const expenseRoutes=require('./routes/expense');
+const userRoutes=require('./routes/user');
 
 app.use(bodyParser.json({ extended: false }));
 
-app.use(expenseRoutes);
+app.use('/user',userRoutes);
 
 sequelize
   .sync()
