@@ -48,13 +48,14 @@
             const response = await axios.post('http://localhost:3000/user/login/',loginDetails)
               if(response.status == 201){
                 //window.location.href= ".\Login\login.html"
-                alert( `User with email ${loginDetails.email} logged in successfully`);
+                alert(response.data.message);
               } else{
-               throw new Error('Failed to login');
+               throw new Error(response.data.message);
               }
             } 
              catch(err){
-              document.body.innerHTML+=`<div style="color:red;">${err}</div>`;  
+              console.log(JSON.stringify(err));
+              document.body.innerHTML+=`<div style="color:red;">${err.message}</div>`;  
              }
             }
        </script>

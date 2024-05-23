@@ -46,11 +46,11 @@ const signup = async (req,res,next)=>{
         if(userExists)
         {
             if(password.localeCompare(userExists.password)===0)
-              res.status(201).json({message: `User with ${email} successfully logged in`,Success: 'true'});
+              res.status(201).json({message: `User with email ${email} successfully logged in`,Success: 'true'});
             else
-              res.status(400).json({message: `Password entered is incorrect`});
+              res.status(401).json({message: `Password entered is incorrect`});
         } else{
-              res.status(400).json("User with given email does not exist");
+              res.status(404).json({message:"User with given email does not exist"});
         }           
         }catch(err){
             console.log(err);
