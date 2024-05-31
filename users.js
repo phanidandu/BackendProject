@@ -1,4 +1,5 @@
 const User=require('../models/user');
+const bcrypt=require('bcrypt');
 
 function isstringinvalid(string){
     if(string==undefined || string.length===0){
@@ -15,16 +16,21 @@ const signup = async (req,res,next)=>{
     if(isstringinvalid(name) || isstringinvalid(email) || isstringinvalid(password)){
         return res.status(400).json({err: "Bad parameters. Something is missing"})  
     }
-
+    
     const userExists=await User.findOne({where: {name:name}})
      
     if(userExists)
     {
         return res.json("User name already exists");
     }    
+    
+    const saltrounds=10;
 
-    await User.create({name: name, email: email, password:password});
-     res.status(201).json({message: "Successfully created new User"});
+    bcrypt.hash(password, saltrounds, async(err,hash)=>{
+        console.log(err);
+        await User.create({name: name, email: email, password:hash});
+        res.status(201).json({message: "Successfully created new User"});
+    })
     }catch(err){
         res.status(500).json({
         error: err 
@@ -38,25 +44,28 @@ const signup = async (req,res,next)=>{
         const {email,password}= req.body;
         
         if(isstringinvalid(email) || isstringinvalid(password)){
-            return res.status(400).json({err: "Bad parameters. Something is missing"})  
+            return res.status(400).json({message: "Bad parameters. Email Id or Password is missing", success: false})  
         }
     
         const userExists=await User.findOne({where: {email:email}})
         
         if(userExists)
-        {
-            if(password.localeCompare(userExists.password)===0)
-              res.status(201).json({message: `User with email ${email} successfully logged in`,Success: 'true'});
-            else
-              res.status(401).json({message: `Password entered is incorrect`});
+        {   
+            bcrypt.compare(password, userExists.password, (err,result)=>{
+               if(err){
+                throw  new Error('Something went wrong');
+               }
+               if(result===true)
+                res.status(201).json({message: `User with email ${email} successfully logged in`,success: true});
+              else
+                res.status(401).json({message: `Password entered is incorrect`,success: false});
+            })
         } else{
-              res.status(404).json({message:"User with given email does not exist"});
+              res.status(404).json({message:"User with given email does not exist",success: false});
         }           
         }catch(err){
             console.log(err);
-            res.status(500).json({
-            message: err
-           })
+            res.status(500).json({message: err,success: false})
          }
         }
 
