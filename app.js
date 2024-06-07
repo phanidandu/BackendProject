@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 
 const sequelize = require('./util/database');
+const Expense=require('./models/Expense');
+const User=require('./models/user');
 
 const app = express();
 
@@ -16,6 +18,9 @@ app.use(bodyParser.json({ extended: false }));
 
 app.use('/user',userRoutes);
 app.use('/expense',expenseRoutes);
+
+User.hasMany(Expense);
+Expense.belongsTo(User);
 
 sequelize
   .sync()

@@ -61,15 +61,15 @@
             
             console.log(e.target.ExpenseAmount.value);
     
-            const obj={amount : e.target.ExpenseAmount.value,
+            const expenseDetails={amount : e.target.ExpenseAmount.value,
               description : e.target.ExpenseDescription.value,
               category : e.target.category.value
             };
-            
-            axios.post('http://localhost:3000/expense/add-expense/',obj)
+            const token=localStorage.getItem('token'); 
+            axios.post('http://localhost:3000/expense/add-expense/',expenseDetails,{headers:{"Authorization":token}})
              .then((response)=>{
              console.log(response);
-             modifyExpense(response.data.ExpenseDetail);
+             modifyExpense(response.data.expense);
             })
             .catch((err)=> {
             document.body.innerHTML=document.body.innerHTML+"<h4>Something went wrong</h4>";  
@@ -78,17 +78,17 @@
            }
 
            window.addEventListener("DOMContentLoaded", ()=>{
-             axios.get('http://localhost:3000/expense/get-expenses')
+            const token=localStorage.getItem('token'); 
+            axios.get('http://localhost:3000/expense/get-expenses',{headers:{"Authorization":token}})
              .then((response) =>{
              console.log(response);
 
-             for(var i=0;i<response.data.allExpenses.length;i++)
-                {
-                  modifyExpense(response.data.allExpenses[i]);
-                }
-              })
-             .catch((error) => console.log(error))
+             response.data.allExpenses.forEach(expense=> {
+              modifyExpense(expense);
              })
+            })
+            .catch((error) => console.log(error))
+            })
           
           function modifyExpense(obj){
             const id=obj.id;
@@ -98,7 +98,17 @@
             document.getElementById('expense').value='';
             document.getElementById('description').value='';
             document.getElementById('category').value='';
-
+            
+            const expenseElemId=`expense-${id}`;
+          
+            parentElem.innerHTML+=
+              `<li id=${expenseElemId} class=list-group>
+                Rs. ${obj.amount}/- - ${obj.description} - ${obj.category}
+                <button onclick='deleteExpense(event, ${id})' class='btn w-25 btn-danger btn-sm delete'>
+                  Delete Expense
+                </button>  
+               </li>`
+            /*
             childElem.classList= "list-group";
             childElem.textContent= 'Rs.' + obj.amount + ' /- ' + ' - ' + obj.description + ' - ' + obj.category;
             
@@ -109,14 +119,7 @@
             deletebtn.type='button';
             deletebtn.value='Delete Expense';
             deletebtn.classList="btn w-25 btn-danger btn-sm delete";
-             
-            deletebtn.onclick = () => {
-              axios.delete(`http://localhost:3000/expense/delete-expense/${id}`)
-              .then(res => console.log(res))
-              .catch(err=> console.log(err))
-              parentElem.removeChild(childElem);   
-            } 
-            
+
             const editbtn=document.createElement('input'); 
             editbtn.type='button';
             editbtn.value='Edit Expense';
@@ -139,13 +142,25 @@
                 .catch(err=> console.log(err))  
                 parentElem.removeChild(childElem);
             } 
-            
+
             buttondiv.appendChild(deletebtn);
             buttondiv.appendChild(editbtn);
             
             childElem.appendChild(buttondiv);
             parentElem.appendChild(childElem);
+            */         
           }
+         
+          function deleteExpense(event,id) {
+              const token=localStorage.getItem('token'); 
+              axios.delete(`http://localhost:3000/expense/delete-expense/${id}`,{headers:{"Authorization":token}})
+              .then(res => console.log(res))
+              .catch(err=> console.log(err))
+
+              const expenseElemId=`expense-${id}`;
+              document.getElementById(expenseElemId).remove();   
+            } 
+
       </script>
     </body>
 </html>

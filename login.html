@@ -48,6 +48,7 @@
             const response = await axios.post('http://localhost:3000/user/login/',loginDetails)
               if(response.status == 201){
                 alert(response.data.message);
+                localStorage.setItem('token',response.data.token);
                 window.location.href= "../ExpenseTrackerFrontend.html"
               } else{
                throw new Error(response.data.message);
