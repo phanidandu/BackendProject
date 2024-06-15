@@ -158,6 +158,7 @@
                    document.getElementById('rzp-btn').style.visibility="hidden";
                    const parent1=document.getElementById('comment');
                    parent1.innerHTML='<h3>You are now a Premium user</h3>';
+                   localStorage.setItem(token, res.data.token);
                    parent1.innerHTML+=`<input id=leaderboard onclick='showLeaderBoard()' type=submit class='btn btn-warning' value='Show Leaderboard'>`;
                   } 
                 }
@@ -179,15 +180,15 @@
                 const token= localStorage.getItem('token');
                 axios.get('http://localhost:3000/premium/showLeaderBoard',{headers:{"Authorization":token}})
                 .then((response) =>{
-                console.log('details>>',response.data.userLeaderBoardDetails);
+                console.log('details>>',response.data.leaderboardofusers);
                 
                 const parentElem=document.getElementById('leaders');
                 console.log(parentElem);
                 parentElem.innerHTML+='<h1>Leaderboard</h1>';
-                response.data.userLeaderBoardDetails.forEach(entry=> {
+                response.data.leaderboardofusers.forEach(entry=> {
                   parentElem.innerHTML+=
                      `<li class=list-group>
-                         Name: ${entry.name} - Total Cost: ${entry.toal_cost}
+                         Name: ${entry.name} - Total Cost: ${entry.total_cost}
                       </li>`
                       })
                     })    
