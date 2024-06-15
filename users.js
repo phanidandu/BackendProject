@@ -86,6 +86,7 @@ const signup = async (req,res,next)=>{
     module.exports = {
         signup,
         getUsers,
-        login
+        login,
+        generateAccessToken
     }
     
